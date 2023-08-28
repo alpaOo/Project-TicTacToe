@@ -25,20 +25,20 @@ body {
   flex-direction: column;
 }
 
-.container {
+.container > .cells {
   display: grid;
   grid-template-columns: repeat(3, 150px);
   grid-auto-rows: 150px;
   padding: 1rem;
 }
 
-.container > div {
+.cells > div {
   border: 0.5px solid gray;
   cursor: pointer;
   user-select: none;
 }
 
-.container > div > p {
+.cells > div > p {
   height: 100%;
   font-size: var(--game-font-size);
   font-weight: var(--game-font-weight);
@@ -46,4 +46,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.container > p {
+  padding: 1rem;
 }
