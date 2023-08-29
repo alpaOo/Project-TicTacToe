@@ -1,6 +1,10 @@
 const gameAsset = (function () {
   const cells = document.querySelectorAll('.cell');
+  const playerStatus = document.querySelector('.playerStatus');
+  const gameStatus = document.querySelector('.gameStatus');
+  const resetButton = document.querySelector('.resetButton');
   const currentPlayer = 'X';
+  const gameRunning = false;
   const winCondition = [
     [0, 1, 2],
     [3, 4, 5],
@@ -13,46 +17,100 @@ const gameAsset = (function () {
   ];
   return {
     cells,
-    currentPlayer
+    currentPlayer,
+    playerStatus,
+    winCondition,
+    gameStatus,
+    resetButton,
+    gameRunning
   };
 })();
 
 function gameInit() {
+  gameAsset.gameRunning = true;
   const board = [
     '', '', '',
     '', '', '',
     '', '', '',
   ];
-  gameAsset.cells.forEach(cell => {
-    cell.addEventListener('click', () => {
-      cellClicked(cell, board);
+  if (gameAsset.gameRunning === true) {
+    gameAsset.cells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        cellClicked(cell, board);
+      });
     });
-  });
+  }
+  gameAsset.playerStatus.textContent = `${gameAsset.currentPlayer}'s turn`;
+  gameAsset.gameStatus.textContent = '';
+  displayResetButton();
 }
 
 function cellClicked(cell, board) {
-  const cellIndex = cell.getAttribute('data-cellIndex');
-  updateBoard(cell, cellIndex, board);
+  if (gameAsset.gameRunning === true) {
+    const cellIndex = cell.getAttribute('data-cellIndex');
+    updateBoard(cell, cellIndex, board);
+  }
 }
 
 function updateBoard(cell, cellIndex, board) {
   board[cellIndex] = gameAsset.currentPlayer;
   cell.textContent = gameAsset.currentPlayer;
-  switchPlayers();
+
+  switchPlayers(board);
+  displayResetButton();
 
   console.log(board);
 }
 
-function switchPlayers() {
-  if (gameAsset.currentPlayer === 'X') {
-    gameAsset.currentPlayer = 'O';
+function switchPlayers(board) {
+  if (checkWinner(board)) {
+    gameAsset.gameStatus.textContent = `${gameAsset.currentPlayer} wins`;
+    disableClickEvent();
+    // resetGame(board);
   } else {
-    gameAsset.currentPlayer = 'X';
+    gameAsset.currentPlayer = (gameAsset.currentPlayer === 'X') ? 'O' : 'X';
+    gameAsset.playerStatus.textContent = `${gameAsset.currentPlayer}'s turn`;
   }
 }
 
-function checkWinner() {
 
+function checkWinner(board) {
+  return gameAsset.winCondition.some((condition) => {
+    return condition.every((index) => {
+      return board[index] === gameAsset.currentPlayer;
+    });
+  });
 }
+
+function disableClickEvent() {
+  gameAsset.gameRunning = false;
+  gameAsset.cells.forEach(cell => {
+    cell.removeEventListener('click', cellClicked);
+  });
+}
+
+function displayResetButton() {
+  gameAsset.resetButton.style.display = (gameAsset.gameRunning) ? 'none' : 'block';
+}
+
+// function resetGame(board) {
+
+//   gameAsset.resetButton.addEventListener('click', () => {
+
+//     board.splice(0, board.length, '', '', '', '', '', '', '', '', '');
+
+//     gameAsset.gameRunning = true;
+//     gameAsset.gameStatus.textContent = '';
+//     gameAsset.playerStatus.textContent = '';
+//     gameAsset.playerStatus.textContent = `${gameAsset.currentPlayer}'s turn`;
+
+//     gameAsset.cells.forEach(cell => {
+//       cell.textContent = '';
+//       cell.addEventListener('click', () => {
+//         cellClicked(cell, board);
+//       });
+//     });
+//   });
+// }
 
 gameInit();
