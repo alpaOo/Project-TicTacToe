@@ -1,13 +1,13 @@
 :root {
   --test-border: 1px solid red;
-  --game-font-weight: 300;
+  --game-font-weight: 500;
   --game-font-size: 3rem;
 }
 
 * {
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   line-height: 1.6;
   box-sizing: border-box;
 }
@@ -29,16 +29,17 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 150px);
   grid-auto-rows: 150px;
-  padding: 1rem;
+  border: 2px solid gray;
 }
 
 .cells > div {
-  border: 0.5px solid gray;
+  border: 2px solid gray;
   cursor: pointer;
   user-select: none;
 }
 
 .cells > div > p {
+  --game-font-weight: bold;
   height: 100%;
   font-size: var(--game-font-size);
   font-weight: var(--game-font-weight);
@@ -48,6 +49,27 @@ body {
   align-items: center;
 }
 
-.container > p {
-  padding: 1rem;
+.statusContainer {
+  padding: 1rem 4px 0 4px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: auto;
+}
+
+.statusContainer > p {
+  --game-font-size: 1.125rem;
+  font-size: var(--game-font-size);
+  font-weight: var(--game-font-weight);
+
+  align-self: center;
+}
+
+.statusContainer > button {
+  --game-font-size: 1.125rem;
+  width: max-content;
+  padding: 0 2px;
+  justify-self: end;
+
+  font-size: var(--game-font-size);
 }
