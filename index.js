@@ -3,8 +3,6 @@ const gameAsset = (function () {
   const playerStatus = document.querySelector('.playerStatus');
   const gameStatus = document.querySelector('.gameStatus');
   const resetButton = document.querySelector('.resetButton');
-  const currentPlayer = 'X';
-  const gameRunning = false;
   const winCondition = [
     [0, 1, 2],
     [3, 4, 5],
@@ -17,100 +15,86 @@ const gameAsset = (function () {
   ];
   return {
     cells,
-    currentPlayer,
     playerStatus,
     winCondition,
     gameStatus,
     resetButton,
-    gameRunning
   };
 })();
 
 function gameInit() {
-  gameAsset.gameRunning = true;
-  const board = [
+  this.board = [
     '', '', '',
     '', '', '',
     '', '', '',
   ];
-  if (gameAsset.gameRunning === true) {
+  this.currentPlayer = 'X';
+  this.gameRunning = true;
+  gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
+  gameAsset.gameStatus.textContent = '';
+  if (this.gameRunning === true) {
     gameAsset.cells.forEach(cell => {
+      cell.textContent = '';
       cell.addEventListener('click', () => {
-        cellClicked(cell, board);
+        cellClicked(cell);
       });
     });
   }
-  gameAsset.playerStatus.textContent = `${gameAsset.currentPlayer}'s turn`;
-  gameAsset.gameStatus.textContent = '';
   displayResetButton();
 }
 
-function cellClicked(cell, board) {
-  if (gameAsset.gameRunning === true) {
+function cellClicked(cell) {
+  if (this.gameRunning === true) {
     const cellIndex = cell.getAttribute('data-cellIndex');
-    updateBoard(cell, cellIndex, board);
+    updateBoard(cell, cellIndex);
   }
 }
 
-function updateBoard(cell, cellIndex, board) {
-  board[cellIndex] = gameAsset.currentPlayer;
-  cell.textContent = gameAsset.currentPlayer;
+function updateBoard(cell, cellIndex) {
+  this.board[cellIndex] = this.currentPlayer;
+  cell.textContent = this.currentPlayer;
 
-  switchPlayers(board);
+  // switchPlayers(board);
+  switchPlayers();
   displayResetButton();
 
-  console.log(board);
+  console.log(this.board);
 }
 
-function switchPlayers(board) {
-  if (checkWinner(board)) {
-    gameAsset.gameStatus.textContent = `${gameAsset.currentPlayer} wins`;
+function switchPlayers() {
+  if (checkWinner()) {
+    gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
     disableClickEvent();
-    // resetGame(board);
+    resetGame();
   } else {
-    gameAsset.currentPlayer = (gameAsset.currentPlayer === 'X') ? 'O' : 'X';
-    gameAsset.playerStatus.textContent = `${gameAsset.currentPlayer}'s turn`;
+    this.currentPlayer = (this.currentPlayer === 'X') ? 'O' : 'X';
+    gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
   }
 }
 
-
-function checkWinner(board) {
+function checkWinner() {
   return gameAsset.winCondition.some((condition) => {
     return condition.every((index) => {
-      return board[index] === gameAsset.currentPlayer;
+      return this.board[index] === this.currentPlayer;
     });
   });
 }
 
 function disableClickEvent() {
-  gameAsset.gameRunning = false;
+  this.gameRunning = false;
   gameAsset.cells.forEach(cell => {
     cell.removeEventListener('click', cellClicked);
   });
 }
 
 function displayResetButton() {
-  gameAsset.resetButton.style.display = (gameAsset.gameRunning) ? 'none' : 'block';
+  gameAsset.resetButton.style.display = (this.gameRunning) ? 'none' : 'block';
 }
 
-// function resetGame(board) {
-
-//   gameAsset.resetButton.addEventListener('click', () => {
-
-//     board.splice(0, board.length, '', '', '', '', '', '', '', '', '');
-
-//     gameAsset.gameRunning = true;
-//     gameAsset.gameStatus.textContent = '';
-//     gameAsset.playerStatus.textContent = '';
-//     gameAsset.playerStatus.textContent = `${gameAsset.currentPlayer}'s turn`;
-
-//     gameAsset.cells.forEach(cell => {
-//       cell.textContent = '';
-//       cell.addEventListener('click', () => {
-//         cellClicked(cell, board);
-//       });
-//     });
-//   });
-// }
+function resetGame() {
+  gameAsset.resetButton.addEventListener('click', () => {
+    gameInit();
+  });
+}
 
 gameInit();
