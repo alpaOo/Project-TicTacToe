@@ -1,5 +1,6 @@
 const gameAsset = (function () {
-  const cells = document.querySelectorAll('.cell');
+  // const cells = document.querySelectorAll('.cell');
+  const cells = document.querySelector('.cells');
   const playerStatus = document.querySelector('.playerStatus');
   const gameStatus = document.querySelector('.gameStatus');
   const resetButton = document.querySelector('.resetButton') as HTMLElement;
@@ -39,12 +40,11 @@ function gameInit(this: GameInit) {
   gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
   gameAsset.gameStatus.textContent = '';
   if (this.gameRunning === true) {
-    gameAsset.cells.forEach(cell => {
-      cell.textContent = '';
-      cell.addEventListener('click', (event) => {
-        cellClicked.call(this, event.currentTarget as HTMLElement)
-      });
-    });
+    gameAsset.cells.addEventListener('click', function(event) {
+      if ((event.target as HTMLElement)?.className === 'cell') {
+        cellClicked.call(gameInit, event.target as HTMLElement)
+      }
+    })
   }
   displayResetButton.call(this);
 }
@@ -60,7 +60,6 @@ function updateBoard(this: GameInit, cell: HTMLElement, cellIndex: number) {
   this.board[cellIndex] = this.currentPlayer;
   cell.textContent = this.currentPlayer;
 
-  // switchPlayers(board);
   switchPlayers.call(gameInit);
   displayResetButton.call(gameInit);
 
@@ -88,11 +87,11 @@ function checkWinner(this: GameInit) {
 
 function disableClickEvent(this: GameInit) {
   this.gameRunning = false;
-  gameAsset.cells.forEach(cell => {
-    cell.removeEventListener('click', (event) => {
-      cellClicked.call(this, event.currentTarget as HTMLElement)
-    });
-  });
+  gameAsset.cells.removeEventListener('click', function(event) {
+    if ((event.target as HTMLElement)?.className === 'cell') {
+      cellClicked.call(gameInit, event.target as HTMLElement)
+    }
+  })
 }
 
 function displayResetButton(this: GameInit) {

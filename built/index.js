@@ -1,5 +1,6 @@
 var gameAsset = (function () {
-    var cells = document.querySelectorAll('.cell');
+    // const cells = document.querySelectorAll('.cell');
+    var cells = document.querySelector('.cells');
     var playerStatus = document.querySelector('.playerStatus');
     var gameStatus = document.querySelector('.gameStatus');
     var resetButton = document.querySelector('.resetButton');
@@ -22,7 +23,6 @@ var gameAsset = (function () {
     };
 })();
 function gameInit() {
-    var _this = this;
     this.board = [
         '', '', '',
         '', '', '',
@@ -33,11 +33,11 @@ function gameInit() {
     gameAsset.playerStatus.textContent = "".concat(this.currentPlayer, "'s turn");
     gameAsset.gameStatus.textContent = '';
     if (this.gameRunning === true) {
-        gameAsset.cells.forEach(function (cell) {
-            cell.textContent = '';
-            cell.addEventListener('click', function (event) {
-                cellClicked.call(_this, event.currentTarget);
-            });
+        gameAsset.cells.addEventListener('click', function (event) {
+            var _a;
+            if (((_a = event.target) === null || _a === void 0 ? void 0 : _a.className) === 'cell') {
+                cellClicked.call(gameInit, event.target);
+            }
         });
     }
     displayResetButton.call(this);
@@ -51,7 +51,6 @@ function cellClicked(cell) {
 function updateBoard(cell, cellIndex) {
     this.board[cellIndex] = this.currentPlayer;
     cell.textContent = this.currentPlayer;
-    // switchPlayers(board);
     switchPlayers.call(gameInit);
     displayResetButton.call(gameInit);
     console.log(this.board);
@@ -76,12 +75,12 @@ function checkWinner() {
     });
 }
 function disableClickEvent() {
-    var _this = this;
     this.gameRunning = false;
-    gameAsset.cells.forEach(function (cell) {
-        cell.removeEventListener('click', function (event) {
-            cellClicked.call(_this, event.currentTarget);
-        });
+    gameAsset.cells.removeEventListener('click', function (event) {
+        var _a;
+        if (((_a = event.target) === null || _a === void 0 ? void 0 : _a.className) === 'cell') {
+            cellClicked.call(gameInit, event.target);
+        }
     });
 }
 function displayResetButton() {
