@@ -22,6 +22,7 @@ var gameAsset = (function () {
     };
 })();
 function gameInit() {
+    var _this = this;
     this.board = [
         '', '', '',
         '', '', '',
@@ -34,31 +35,31 @@ function gameInit() {
     if (this.gameRunning === true) {
         gameAsset.cells.forEach(function (cell) {
             cell.textContent = '';
-            cell.addEventListener('click', function () {
-                cellClicked(cell);
+            cell.addEventListener('click', function (event) {
+                cellClicked.call(_this, event.currentTarget);
             });
         });
     }
-    displayResetButton();
+    displayResetButton.call(this);
 }
 function cellClicked(cell) {
     if (this.gameRunning === true) {
-        var cellIndex = cell.getAttribute('data-cellIndex');
-        updateBoard(cell, cellIndex);
+        var cellIndex = parseInt(cell.getAttribute('data-cellIndex'));
+        updateBoard.call(gameInit, cell, cellIndex);
     }
 }
 function updateBoard(cell, cellIndex) {
     this.board[cellIndex] = this.currentPlayer;
     cell.textContent = this.currentPlayer;
     // switchPlayers(board);
-    switchPlayers();
-    displayResetButton();
+    switchPlayers.call(gameInit);
+    displayResetButton.call(gameInit);
     console.log(this.board);
 }
 function switchPlayers() {
-    if (checkWinner()) {
+    if (checkWinner.call(gameInit)) {
         gameAsset.gameStatus.textContent = "".concat(this.currentPlayer, " wins");
-        disableClickEvent();
+        disableClickEvent.call(gameInit);
         resetGame();
     }
     else {
@@ -75,9 +76,12 @@ function checkWinner() {
     });
 }
 function disableClickEvent() {
+    var _this = this;
     this.gameRunning = false;
     gameAsset.cells.forEach(function (cell) {
-        cell.removeEventListener('click', cellClicked);
+        cell.removeEventListener('click', function (event) {
+            cellClicked.call(_this, event.currentTarget);
+        });
     });
 }
 function displayResetButton() {
@@ -85,7 +89,7 @@ function displayResetButton() {
 }
 function resetGame() {
     gameAsset.resetButton.addEventListener('click', function () {
-        gameInit();
+        gameInit.call(gameInit);
     });
 }
-gameInit();
+gameInit.call(gameInit);
