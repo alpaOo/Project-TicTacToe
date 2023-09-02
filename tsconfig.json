@@ -1,13 +1,13 @@
 {
-  "compilerOptions": {
-    "outDir": "./built",
-    "allowJs": true,
-    "target": "ES6",
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noEmitOnError": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true
-  },
-  "include": ["./src/**/*"]
+    "compilerOptions": {
+        "outDir": "./docs",
+        "allowJs": true,
+        "target": "ES6",
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noEmitOnError": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true
+    },
+    "include": ["./src/**/*"]
 }
