@@ -22,18 +22,15 @@ const gameAsset = (function () {
         resetButton,
     };
 })();
-
 interface GameInit {
     board: string[];
     currentPlayer: string;
     gameRunning: boolean;
 }
-
 function gameInit(this: GameInit) {
     this.board = ["", "", "", "", "", "", "", "", ""];
     this.currentPlayer = "X";
     this.gameRunning = true;
-
     gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
     gameAsset.gameStatus.textContent = "";
     if (this.gameRunning === true) {
@@ -43,26 +40,18 @@ function gameInit(this: GameInit) {
             }
         });
     }
-    displayResetButton.call(this);
 }
-
 function cellClicked(this: GameInit, cell: HTMLElement) {
     if (this.gameRunning === true) {
         const cellIndex: number = parseInt(cell.getAttribute("data-cellIndex"));
         updateBoard.call(gameInit, cell, cellIndex);
     }
 }
-
 function updateBoard(this: GameInit, cell: HTMLElement, cellIndex: number) {
     this.board[cellIndex] = this.currentPlayer;
     cell.textContent = this.currentPlayer;
-
     switchPlayers.call(gameInit);
-    displayResetButton.call(gameInit);
-
-    console.log(this.board);
 }
-
 function switchPlayers(this: GameInit) {
     if (checkWinner.call(gameInit)) {
         gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
@@ -73,7 +62,6 @@ function switchPlayers(this: GameInit) {
         gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
     }
 }
-
 function checkWinner(this: GameInit) {
     return gameAsset.winCondition.some((condition) => {
         return condition.every((index) => {
@@ -81,7 +69,6 @@ function checkWinner(this: GameInit) {
         });
     });
 }
-
 function disableClickEvent(this: GameInit) {
     this.gameRunning = false;
     gameAsset.cells.removeEventListener("click", function (event) {
@@ -90,21 +77,16 @@ function disableClickEvent(this: GameInit) {
         }
     });
 }
-
-function displayResetButton(this: GameInit) {
-    gameAsset.resetButton.style.display = this.gameRunning ? "none" : "block";
-}
-
 function resetGame(this: GameInit) {
     gameAsset.resetButton.addEventListener("click", () => {
-        // for (let i = 0; i < 9; i += 1) {
-        //   gameAsset.cells.children[i].firstElementChild.textContent = ''
-        // }
-
-        Array.from(gameAsset.cells.children).forEach(
-            (cell) => (cell.textContent = "")
-        );
+        this.board = ["", "", "", "", "", "", "", "", ""];
+        this.currentPlayer = "X";
+        this.gameRunning = true;
+        gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
+        gameAsset.gameStatus.textContent = "";
+        Array.from(gameAsset.cells.children).forEach((cell) => {
+            cell.firstElementChild.textContent = "";
+        });
     });
 }
-
 gameInit.call(gameInit);
