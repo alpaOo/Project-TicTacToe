@@ -54,12 +54,13 @@ function switchPlayers() {
     if (checkWinner.call(gameInit)) {
         gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
         disableClickEvent.call(gameInit);
-        // resetGame.call(gameInit);
     }
-    else {
-        this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
-        gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
+    if (checkDraw.call(gameInit)) {
+        gameAsset.gameStatus.textContent = "It's a DRAW";
+        disableClickEvent.call(gameInit);
     }
+    this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
+    gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
 }
 function checkWinner() {
     return gameAsset.winCondition.some((condition) => {
@@ -67,6 +68,9 @@ function checkWinner() {
             return this.board[index] === this.currentPlayer;
         });
     });
+}
+function checkDraw() {
+    return this.board.every((value) => value !== "");
 }
 function disableClickEvent() {
     this.gameRunning = false;
