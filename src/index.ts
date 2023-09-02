@@ -37,9 +37,11 @@ function gameInit(this: GameInit) {
         gameAsset.cells.addEventListener("click", (event) => {
             if ((event.target as HTMLElement)?.className === "cell") {
                 cellClicked.call(gameInit, event.target as HTMLElement);
+                console.log(this.board);
             }
         });
     }
+    resetGame.call(gameInit);
 }
 function cellClicked(this: GameInit, cell: HTMLElement) {
     if (this.gameRunning === true) {
@@ -56,7 +58,7 @@ function switchPlayers(this: GameInit) {
     if (checkWinner.call(gameInit)) {
         gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
         disableClickEvent.call(gameInit);
-        resetGame.call(gameInit);
+        // resetGame.call(gameInit);
     } else {
         this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
         gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;

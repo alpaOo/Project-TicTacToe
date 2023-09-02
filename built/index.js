@@ -33,9 +33,11 @@ function gameInit() {
             var _a;
             if (((_a = event.target) === null || _a === void 0 ? void 0 : _a.className) === "cell") {
                 cellClicked.call(gameInit, event.target);
+                console.log(this.board);
             }
         });
     }
+    resetGame.call(gameInit);
 }
 function cellClicked(cell) {
     if (this.gameRunning === true) {
@@ -52,7 +54,7 @@ function switchPlayers() {
     if (checkWinner.call(gameInit)) {
         gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
         disableClickEvent.call(gameInit);
-        resetGame.call(gameInit);
+        // resetGame.call(gameInit);
     }
     else {
         this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
