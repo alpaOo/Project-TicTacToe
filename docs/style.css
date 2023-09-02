@@ -12,11 +12,6 @@
   box-sizing: border-box;
 }
 
-/* .container,
-.container > div {
-  border: var(--test-border);
-} */
-
 body {
   height: 100dvh;
   display: flex;
