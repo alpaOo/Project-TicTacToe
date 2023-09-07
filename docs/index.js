@@ -1,5 +1,4 @@
 const gameAsset = (function () {
-    // const cells = document.querySelectorAll('.cell');
     const cells = document.querySelector(".cells");
     const playerStatus = document.querySelector(".playerStatus");
     const gameStatus = document.querySelector(".gameStatus");
@@ -28,30 +27,15 @@ function gameInit() {
     this.gameRunning = true;
     gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
     gameAsset.gameStatus.textContent = "";
-    if (this.gameRunning === true) {
-        gameAsset.cells.addEventListener("click", (event) => {
-            var _a;
-            if (((_a = event.target) === null || _a === void 0 ? void 0 : _a.className) === "cell") {
-                cellClicked.call(gameInit, event.target);
-                console.log(this.board);
-            }
-        });
-    }
+    gameAsset.cells.addEventListener("click", (event) => {
+        cellClicked.call(gameInit, event.target);
+        console.log(this.board);
+    });
     resetGame.call(gameInit);
 }
 function cellClicked(cell) {
-    if (this.gameRunning === true) {
-        const cellIndex = parseInt(cell.getAttribute("data-cellIndex"));
-        updateBoard.call(gameInit, cell, cellIndex);
-    }
-}
-function updateBoard(cell, cellIndex) {
-    this.board[cellIndex] = this.currentPlayer;
-    cell.textContent = this.currentPlayer;
-    switchPlayers.call(gameInit);
-}
-function switchPlayers() {
-    if (checkWinner.call(gameInit)) {
+    updateBoard.call(gameInit, cell);
+    if (checkWinner.call(gameInit) === true) {
         gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
         disableClickEvent.call(gameInit);
     }
@@ -59,8 +43,11 @@ function switchPlayers() {
         gameAsset.gameStatus.textContent = "It's a DRAW";
         disableClickEvent.call(gameInit);
     }
-    this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
-    gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
+}
+function updateBoard(cell) {
+    const cellIndex = parseInt(cell.id);
+    this.board[cellIndex] = this.currentPlayer;
+    cell.textContent = this.currentPlayer;
 }
 function checkWinner() {
     return gameAsset.winCondition.some((condition) => {

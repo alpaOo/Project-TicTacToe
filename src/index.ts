@@ -1,5 +1,4 @@
 const gameAsset = (function () {
-    // const cells = document.querySelectorAll('.cell');
     const cells: HTMLElement = document.querySelector(".cells");
     const playerStatus: HTMLElement = document.querySelector(".playerStatus");
     const gameStatus: HTMLElement = document.querySelector(".gameStatus");
@@ -33,29 +32,15 @@ function gameInit(this: GameInit) {
     this.gameRunning = true;
     gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
     gameAsset.gameStatus.textContent = "";
-    if (this.gameRunning === true) {
-        gameAsset.cells.addEventListener("click", (event) => {
-            if ((event.target as HTMLElement)?.className === "cell") {
-                cellClicked.call(gameInit, event.target as HTMLElement);
-                console.log(this.board);
-            }
-        });
-    }
+    gameAsset.cells.addEventListener("click", (event) => {
+        cellClicked.call(gameInit, event.target as HTMLElement);
+        console.log(this.board);
+    });
     resetGame.call(gameInit);
 }
 function cellClicked(this: GameInit, cell: HTMLElement) {
-    if (this.gameRunning === true) {
-        const cellIndex: number = parseInt(cell.getAttribute("data-cellIndex"));
-        updateBoard.call(gameInit, cell, cellIndex);
-    }
-}
-function updateBoard(this: GameInit, cell: HTMLElement, cellIndex: number) {
-    this.board[cellIndex] = this.currentPlayer;
-    cell.textContent = this.currentPlayer;
-    switchPlayers.call(gameInit);
-}
-function switchPlayers(this: GameInit) {
-    if (checkWinner.call(gameInit)) {
+    updateBoard.call(gameInit, cell);
+    if (checkWinner.call(gameInit) === true) {
         gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
         disableClickEvent.call(gameInit);
     }
@@ -63,8 +48,11 @@ function switchPlayers(this: GameInit) {
         gameAsset.gameStatus.textContent = "It's a DRAW";
         disableClickEvent.call(gameInit);
     }
-    this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
-    gameAsset.playerStatus.textContent = `${this.currentPlayer}'s turn`;
+}
+function updateBoard(this: GameInit, cell: HTMLElement) {
+    const cellIndex: number = parseInt(cell.id);
+    this.board[cellIndex] = this.currentPlayer;
+    cell.textContent = this.currentPlayer;
 }
 function checkWinner(this: GameInit) {
     return gameAsset.winCondition.some((condition) => {
