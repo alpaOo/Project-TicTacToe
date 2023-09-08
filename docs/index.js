@@ -35,9 +35,9 @@ function gameInit() {
     resetGame.call(gameInit);
 }
 function cellClicked(cell) {
-    if (this.gameRunning === true) {
+    if (this.gameRunning === true && cell.textContent === "") {
         updateBoard.call(gameInit, cell);
-        if (checkWinner.call(gameInit, cell) === true) {
+        if (checkWinner.call(gameInit) === true) {
             gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
             disableClickEvent.call(gameInit);
         }
