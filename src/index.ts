@@ -1,3 +1,4 @@
+"use strict";
 const gameAsset = (function () {
     const cells: HTMLElement = document.querySelector(".cells");
     const playerStatus: HTMLElement = document.querySelector(".playerStatus");
@@ -39,37 +40,73 @@ function gameInit(this: GameInit) {
     resetGame.call(gameInit);
 }
 function cellClicked(this: GameInit, cell: HTMLElement) {
-    updateBoard.call(gameInit, cell);
-    if (checkWinner.call(gameInit) === true) {
-        gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
-        disableClickEvent.call(gameInit);
-    }
-    if (checkDraw.call(gameInit)) {
-        gameAsset.gameStatus.textContent = "It's a DRAW";
-        disableClickEvent.call(gameInit);
+    if (this.gameRunning === true) {
+        updateBoard.call(gameInit, cell);
+        if (checkWinner.call(gameInit, cell) === true) {
+            gameAsset.gameStatus.textContent = `${this.currentPlayer} wins`;
+            disableClickEvent.call(gameInit);
+        }
+        if (checkDraw.call(gameInit) === true) {
+            gameAsset.gameStatus.textContent = "It's a DRAW";
+            disableClickEvent.call(gameInit);
+        }
     }
 }
 function updateBoard(this: GameInit, cell: HTMLElement) {
     const cellIndex: number = parseInt(cell.id);
-    this.board[cellIndex] = this.currentPlayer;
-    cell.textContent = this.currentPlayer;
+    if (this.currentPlayer === "X") {
+        this.board[cellIndex] = this.currentPlayer;
+        cell.textContent = this.currentPlayer;
+        aiPlayer.call(this);
+    } else {
+        this.board[cellIndex] = this.currentPlayer;
+        cell.textContent = this.currentPlayer;
+        this.currentPlayer = "X";
+    }
+}
+function aiPlayer(this: GameInit) {
+    this.currentPlayer = "O";
+    const emptyCells = this.board
+        .map(function (cell, index) {
+            return { cell, index };
+        })
+        .filter(function ({ cell }) {
+            return cell === "";
+        });
+    if (emptyCells.length === 0) return;
+    const rndIndex = Math.floor(Math.random() * emptyCells.length);
+    const { index } = emptyCells[rndIndex];
+    this.board[index] = this.currentPlayer;
+    const cell = document.getElementById(index.toString());
+    if (cell) cell.textContent = this.currentPlayer;
+    this.currentPlayer = "X";
 }
 function checkWinner(this: GameInit) {
-    return gameAsset.winCondition.some((condition) => {
-        return condition.every((index) => {
-            return this.board[index] === this.currentPlayer;
-        });
+    const XWinner = gameAsset.winCondition.some((condition) => {
+        const playerCells = condition.map((index) => this.board[index]);
+        return playerCells.every((cell) => cell === "X");
     });
+    const OWinner = gameAsset.winCondition.some((condition) => {
+        const playerCells = condition.map((index) => this.board[index]);
+        return playerCells.every((cell) => cell === "O");
+    });
+    if (XWinner) {
+        this.currentPlayer = "X";
+        return true;
+    }
+    if (OWinner) {
+        this.currentPlayer = "O";
+        return true;
+    }
+    return false;
 }
 function checkDraw(this: GameInit) {
     return this.board.every((value) => value !== "");
 }
 function disableClickEvent(this: GameInit) {
     this.gameRunning = false;
-    gameAsset.cells.removeEventListener("click", function (event) {
-        if ((event.target as HTMLElement)?.className === "cell") {
-            cellClicked.call(gameInit, event.target as HTMLElement);
-        }
+    gameAsset.cells.removeEventListener("click", (event) => {
+        cellClicked.call(gameInit, event.target as HTMLElement);
     });
 }
 function resetGame(this: GameInit) {
